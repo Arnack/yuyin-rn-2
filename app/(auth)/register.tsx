@@ -2,17 +2,14 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Ionicons } from '@expo/vector-icons'
 import { Link, router } from 'expo-router'
 import React, { useState } from 'react'
-import {
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from 'react-native'
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native'
+
+import { Button, ButtonText } from '@/components/ui/button'
+import { Heading } from '@/components/ui/heading'
+import { HStack } from '@/components/ui/hstack'
+import { Input, InputField, InputIcon, InputSlot } from '@/components/ui/input'
+import { Text } from '@/components/ui/text'
+import { VStack } from '@/components/ui/vstack'
 
 export default function RegisterScreen() {
   const [email, setEmail] = useState('')
@@ -65,205 +62,135 @@ export default function RegisterScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={{ flex: 1, backgroundColor: '#fff' }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Join YuYin</Text>
-          <Text style={styles.subtitle}>Create your account to start learning Chinese</Text>
-        </View>
-
-        <View style={styles.form}>
-          <View style={styles.inputContainer}>
-            <Ionicons name="mail-outline" size={20} color="#666" style={styles.inputIcon} />
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <Ionicons name="lock-closed-outline" size={20} color="#666" style={styles.inputIcon} />
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!showPassword}
-              autoCapitalize="none"
-            />
-            <TouchableOpacity
-              style={styles.eyeIcon}
-              onPress={() => setShowPassword(!showPassword)}
-            >
-              <Ionicons
-                name={showPassword ? 'eye-outline' : 'eye-off-outline'}
-                size={20}
-                color="#666"
-              />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.inputContainer}>
-            <Ionicons name="lock-closed-outline" size={20} color="#666" style={styles.inputIcon} />
-            <TextInput
-              style={styles.input}
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              secureTextEntry={!showConfirmPassword}
-              autoCapitalize="none"
-            />
-            <TouchableOpacity
-              style={styles.eyeIcon}
-              onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-            >
-              <Ionicons
-                name={showConfirmPassword ? 'eye-outline' : 'eye-off-outline'}
-                size={20}
-                color="#666"
-              />
-            </TouchableOpacity>
-          </View>
-
-          <Text style={styles.passwordHint}>
-            Password must be at least 6 characters long
-          </Text>
-
-          <TouchableOpacity
-            style={[styles.registerButton, loading && styles.registerButtonDisabled]}
-            onPress={handleRegister}
-            disabled={loading}
-          >
-            <Text style={styles.registerButtonText}>
-              {loading ? 'Creating Account...' : 'Create Account'}
+      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
+        <VStack space="xl" className="flex-1 justify-center">
+          {/* Header */}
+          <VStack space="sm" className="items-center mb-10">
+            <Heading size="3xl" className="text-gray-900 text-center">
+              Join YuYin
+            </Heading>
+            <Text size="md" className="text-gray-600 text-center">
+              Create your account to start learning Chinese
             </Text>
-          </TouchableOpacity>
+          </VStack>
 
-          <View style={styles.divider}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>or</Text>
-            <View style={styles.dividerLine} />
-          </View>
+          {/* Form */}
+          <VStack space="lg">
+            {/* Email Input */}
+            <VStack space="xs">
+              <Text size="sm" className="text-gray-700 font-medium">Email</Text>
+              <Input className="border border-gray-300 bg-gray-50">
+                <InputSlot className="pl-3">
+                  <InputIcon>
+                    <Ionicons name="mail-outline" size={20} color="#666" />
+                  </InputIcon>
+                </InputSlot>
+                <InputField
+                  placeholder="Enter your email"
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+              </Input>
+            </VStack>
 
-          <View style={styles.loginContainer}>
-            <Text style={styles.loginText}>Already have an account? </Text>
-            <Link href="/(auth)/login" asChild>
-              <TouchableOpacity>
-                <Text style={styles.loginLink}>Sign In</Text>
-              </TouchableOpacity>
-            </Link>
-          </View>
-        </View>
+            {/* Password Input */}
+            <VStack space="xs">
+              <Text size="sm" className="text-gray-700 font-medium">Password</Text>
+              <Input className="border border-gray-300 bg-gray-50">
+                <InputSlot className="pl-3">
+                  <InputIcon>
+                    <Ionicons name="lock-closed-outline" size={20} color="#666" />
+                  </InputIcon>
+                </InputSlot>
+                <InputField
+                  placeholder="Enter your password"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                />
+                <InputSlot className="pr-3" onPress={() => setShowPassword(!showPassword)}>
+                  <InputIcon>
+                    <Ionicons 
+                      name={showPassword ? 'eye-outline' : 'eye-off-outline'} 
+                      size={20} 
+                      color="#666" 
+                    />
+                  </InputIcon>
+                </InputSlot>
+              </Input>
+            </VStack>
+
+            {/* Confirm Password Input */}
+            <VStack space="xs">
+              <Text size="sm" className="text-gray-700 font-medium">Confirm Password</Text>
+              <Input className="border border-gray-300 bg-gray-50">
+                <InputSlot className="pl-3">
+                  <InputIcon>
+                    <Ionicons name="lock-closed-outline" size={20} color="#666" />
+                  </InputIcon>
+                </InputSlot>
+                <InputField
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                  secureTextEntry={!showConfirmPassword}
+                  autoCapitalize="none"
+                />
+                <InputSlot className="pr-3" onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+                  <InputIcon>
+                    <Ionicons 
+                      name={showConfirmPassword ? 'eye-outline' : 'eye-off-outline'} 
+                      size={20} 
+                      color="#666" 
+                    />
+                  </InputIcon>
+                </InputSlot>
+              </Input>
+            </VStack>
+
+            <Text size="sm" className="text-gray-600 ml-1">
+              Password must be at least 6 characters long
+            </Text>
+
+            {/* Register Button */}
+            <Button
+              size="lg"
+              action="primary"
+              className="bg-red-600 mt-4"
+              onPress={handleRegister}
+              isDisabled={loading}
+            >
+              <ButtonText className="text-white font-semibold">
+                {loading ? 'Creating Account...' : 'Create Account'}
+              </ButtonText>
+            </Button>
+
+            {/* Divider */}
+            <HStack className="items-center my-6">
+              <View className="flex-1 h-px bg-gray-300" />
+              <Text className="mx-4 text-gray-600">or</Text>
+              <View className="flex-1 h-px bg-gray-300" />
+            </HStack>
+
+            {/* Sign In Link */}
+            <HStack className="justify-center items-center">
+              <Text className="text-gray-600">Already have an account? </Text>
+              <Link href="/(auth)/login" asChild>
+                <Button variant="link" size="sm" className="p-0">
+                  <ButtonText className="text-red-600 font-semibold">Sign In</ButtonText>
+                </Button>
+              </Link>
+            </HStack>
+          </VStack>
+        </VStack>
       </ScrollView>
     </KeyboardAvoidingView>
   )
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    padding: 20,
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: 40,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-  },
-  form: {
-    width: '100%',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    marginBottom: 16,
-    backgroundColor: '#f9f9f9',
-  },
-  inputIcon: {
-    marginRight: 12,
-  },
-  input: {
-    flex: 1,
-    height: 50,
-    fontSize: 16,
-    color: '#333',
-  },
-  eyeIcon: {
-    padding: 4,
-  },
-  passwordHint: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 20,
-    marginLeft: 4,
-  },
-  registerButton: {
-    backgroundColor: '#dc2626',
-    borderRadius: 12,
-    paddingVertical: 16,
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  registerButtonDisabled: {
-    backgroundColor: '#ccc',
-  },
-  registerButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#ddd',
-  },
-  dividerText: {
-    marginHorizontal: 16,
-    color: '#666',
-    fontSize: 14,
-  },
-  loginContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loginText: {
-    color: '#666',
-    fontSize: 16,
-  },
-  loginLink: {
-    color: '#dc2626',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-}) 
+} 

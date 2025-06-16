@@ -2,12 +2,13 @@ import gluestackPlugin from '@gluestack-ui/nativewind-utils/tailwind-plugin';
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: process.env.DARK_MODE ? process.env.DARK_MODE : 'media',
+  darkMode: 'class',
   content: [
-    './src/**/*.{html,js,jsx,ts,tsx}',
-    './src/core-components/**/**/*.{html,js,jsx,ts,tsx}',
-    './src/components/**/*.{html,js,jsx,ts,tsx,mdx}',
-    './src/hooks/**/*.{html,js,jsx,ts,tsx,mdx}',
+    './app/**/*.{html,js,jsx,ts,tsx}',
+    './components/**/*.{html,js,jsx,ts,tsx,mdx}',
+    './hooks/**/*.{html,js,jsx,ts,tsx,mdx}',
+    './contexts/**/*.{html,js,jsx,ts,tsx,mdx}',
+    './lib/**/*.{html,js,jsx,ts,tsx,mdx}',
   ],
   presets: [require('nativewind/preset')],
   safelist: [

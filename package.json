@@ -11,11 +11,17 @@
     "lint": "expo lint"
   },
   "dependencies": {
+    "@expo/html-elements": "^0.4.3",
     "@expo/vector-icons": "^14.1.0",
+    "@gluestack-ui/button": "^1.0.14",
+    "@gluestack-ui/form-control": "^0.1.19",
+    "@gluestack-ui/hstack": "^0.1.17",
     "@gluestack-ui/icon": "^0.1.27",
+    "@gluestack-ui/input": "^0.1.38",
     "@gluestack-ui/nativewind-utils": "^1.0.26",
     "@gluestack-ui/overlay": "^0.1.22",
     "@gluestack-ui/toast": "^1.0.9",
+    "@gluestack-ui/vstack": "^0.1.16",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
