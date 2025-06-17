@@ -20,9 +20,11 @@ export default function PracticeScreen() {
           </TouchableOpacity>
         </Link>
         <View style={styles.tilesColumn}>
-          <TouchableOpacity style={styles.tile}>
-            <ThemedText type="subtitle">Speak Tones</ThemedText>
-          </TouchableOpacity>
+          <Link href="/(tabs)/speak-tones" asChild>
+            <TouchableOpacity style={styles.tile}>
+              <ThemedText type="subtitle">Speak Tones</ThemedText>
+            </TouchableOpacity>
+          </Link>
           <TouchableOpacity style={styles.tile}>
             <ThemedText type="subtitle">Saved Words</ThemedText>
           </TouchableOpacity>
