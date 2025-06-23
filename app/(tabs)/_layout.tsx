@@ -54,6 +54,22 @@ export default function TabLayout() {
           tabBarIcon: ({ color }: { color: string }) => <IconSymbol size={28} name="star.fill" color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="recognise-tones"
+        options={{
+          title: 'Recognise Tones',
+          href: null, // Hide from tab bar
+          tabBarStyle: { display: 'none' }, // Hide tab bar for this screen
+        }}
+      />
+      <Tabs.Screen
+        name="speak-tones"
+        options={{
+          title: 'Speak Tones',
+          href: null, // Hide from tab bar
+          tabBarStyle: { display: 'none' }, // Hide tab bar for this screen
+        }}
+      />
     </Tabs>
   );
 }
