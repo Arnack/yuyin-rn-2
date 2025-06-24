@@ -363,7 +363,7 @@ export default function SentenceReadingScreen() {
         setIsPlayingRecording(true);
         await sound.playAsync();
         
-        sound.setOnPlaybackStatusUpdate((status) => {
+        sound.setOnPlaybackStatusUpdate((status: any) => {
           if (status.isLoaded && status.didJustFinish) {
             setIsPlayingRecording(false);
             sound.unloadAsync();

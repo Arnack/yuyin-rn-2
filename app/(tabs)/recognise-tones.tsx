@@ -57,7 +57,7 @@ const translations = {
     replay: 'Replay Audio',
     instruction: 'Which tone do you hear?',
     resultShown: 'Answer revealed',
-    continue: 'Next Question',
+    continue: 'Next',
     correct: 'Correct',
     total: 'Questions',
     accuracy: 'Accuracy',
@@ -483,8 +483,8 @@ export default function RecogniseTonesScreen() {
         {/* Tone Selection */}
         {currentFile && !isLoading && (
           <View style={styles.tonesSection}>
-            <View style={styles.instructionContainer}>
               {/* Show result section with correct tone */}
+            {/* <View style={styles.instructionContainer}>
               {showResult && soundInfo.sound && (
                 <View style={styles.resultDisplay}>
                   <Text style={styles.resultLabel}>{t.correctAnswer}</Text>
@@ -503,7 +503,7 @@ export default function RecogniseTonesScreen() {
                   </View>
                 </View>
               )}
-            </View>
+            </View> */}
             
             <Animated.View style={[styles.tonesGrid, { transform: [{ scale: scaleAnim }] }]}>
               {toneData.map((tone, index) => (

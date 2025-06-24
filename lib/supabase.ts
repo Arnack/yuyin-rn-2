@@ -3,14 +3,27 @@ import * as SecureStore from 'expo-secure-store'
 import 'react-native-url-polyfill/auto'
 
 const ExpoSecureStoreAdapter = {
-  getItem: (key: string) => {
-    return SecureStore.getItemAsync(key)
+  getItem: async (key: string) => {
+    try {
+      return await SecureStore.getItemAsync(key)
+    } catch (error) {
+      console.warn('SecureStore getItem error:', error)
+      return null
+    }
   },
-  setItem: (key: string, value: string) => {
-    SecureStore.setItemAsync(key, value)
+  setItem: async (key: string, value: string) => {
+    try {
+      return await SecureStore.setItemAsync(key, value)
+    } catch (error) {
+      console.warn('SecureStore setItem error:', error)
+    }
   },
-  removeItem: (key: string) => {
-    SecureStore.deleteItemAsync(key)
+  removeItem: async (key: string) => {
+    try {
+      return await SecureStore.deleteItemAsync(key)
+    } catch (error) {
+      console.warn('SecureStore removeItem error:', error)
+    }
   },
 }
 
