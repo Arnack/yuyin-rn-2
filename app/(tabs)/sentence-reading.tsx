@@ -5,21 +5,20 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    Animated,
-    Dimensions,
-    Modal,
-    Platform,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  Animated,
+  Dimensions,
+  Modal,
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { Circle, Svg } from 'react-native-svg';
 
 const { width, height } = Dimensions.get('window');
 const MAX_RECORDING_TIME = 10;
@@ -89,7 +88,7 @@ export default function SentenceReadingScreen() {
   // Animation values
   const recordingScale = useRef(new Animated.Value(1)).current;
   const progressAnim = useRef(new Animated.Value(0)).current;
-  const timerRef = useRef<ReturnType<typeof setInterval>>();
+  const timerRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
   const audioElement = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -106,6 +105,60 @@ export default function SentenceReadingScreen() {
       generatePracticeText(difficulty);
     }
   }, [difficulty]);
+
+  const startRecordingAnimation = () => {
+    const scaleAnimation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(recordingScale, {
+          toValue: 1.2,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+        Animated.timing(recordingScale, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+
+    const progressAnimation = Animated.timing(progressAnim, {
+      toValue: 1,
+      duration: MAX_RECORDING_TIME * 1000,
+      useNativeDriver: false,
+    });
+
+    scaleAnimation.start();
+    progressAnimation.start();
+  };
+
+  const stopRecordingAnimation = () => {
+    recordingScale.stopAnimation();
+    progressAnim.stopAnimation();
+    recordingScale.setValue(1);
+    progressAnim.setValue(0);
+  };
+
+  const stopRecording = useCallback(async () => {
+    if (recording) {
+      try {
+        await recording.stopAndUnloadAsync();
+        const uri = recording.getURI();
+        setAudioUri(uri);
+        setIsRecording(false);
+        setRecording(null);
+        
+        // Stop recording animation
+        stopRecordingAnimation();
+
+        if (uri) {
+          await assessPronunciation(uri);
+        }
+      } catch (error) {
+        console.error('Error stopping recording:', error);
+      }
+    }
+  }, [recording]);
 
   useEffect(() => {
     if (isRecording) {
@@ -242,7 +295,6 @@ export default function SentenceReadingScreen() {
       }
 
       setIsRecording(false);
-      setRecordedTime(0);
       setAssessmentResult(null);
       setError(null);
 
@@ -261,60 +313,6 @@ export default function SentenceReadingScreen() {
       console.error('Error starting recording:', error);
       Alert.alert('Error', 'Failed to start recording. Please check microphone permissions.');
     }
-  };
-
-  const stopRecording = useCallback(async () => {
-    if (recording) {
-      try {
-        await recording.stopAndUnloadAsync();
-        const uri = recording.getURI();
-        setAudioUri(uri);
-        setIsRecording(false);
-        setRecording(null);
-        
-        // Stop recording animation
-        stopRecordingAnimation();
-
-        if (uri) {
-          await assessPronunciation(uri);
-        }
-      } catch (error) {
-        console.error('Error stopping recording:', error);
-      }
-    }
-  }, [recording]);
-
-  const startRecordingAnimation = () => {
-    const scaleAnimation = Animated.loop(
-      Animated.sequence([
-        Animated.timing(recordingScale, {
-          toValue: 1.2,
-          duration: 600,
-          useNativeDriver: true,
-        }),
-        Animated.timing(recordingScale, {
-          toValue: 1,
-          duration: 600,
-          useNativeDriver: true,
-        }),
-      ])
-    );
-
-    const progressAnimation = Animated.timing(progressAnim, {
-      toValue: 1,
-      duration: MAX_RECORDING_TIME * 1000,
-      useNativeDriver: false,
-    });
-
-    scaleAnimation.start();
-    progressAnimation.start();
-  };
-
-  const stopRecordingAnimation = () => {
-    recordingScale.stopAnimation();
-    progressAnim.stopAnimation();
-    recordingScale.setValue(1);
-    progressAnim.setValue(0);
   };
 
   const assessPronunciation = async (audioUri: string) => {
@@ -422,9 +420,7 @@ export default function SentenceReadingScreen() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const accuracyPercentage = statistics.total > 0 
-    ? Math.round((statistics.correct / statistics.total) * 100) 
-    : 0;
+
 
   return (
     <>
@@ -442,12 +438,22 @@ export default function SentenceReadingScreen() {
           <View style={styles.placeholder} />
         </View>
 
-        {/* Progress Bar */}
-        {statistics.total > 0 && (
-          <View style={styles.progressContainer}>
-            <Text style={styles.progressText}>
-              Accuracy: {statistics.correct}/{statistics.total} ({accuracyPercentage}%)
-            </Text>
+        {/* Recording Progress Bar */}
+        {isRecording && (
+          <View style={styles.recordingProgressContainer}>
+            <View style={styles.recordingProgressBar}>
+              <Animated.View 
+                style={[
+                  styles.recordingProgressFill,
+                  {
+                    width: progressAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ['0%', '100%'],
+                    }),
+                  }
+                ]}
+              />
+            </View>
           </View>
         )}
 
@@ -641,22 +647,6 @@ export default function SentenceReadingScreen() {
                     <Ionicons name={isRecording ? "stop" : "mic"} size={32} color="white" />
                   </LinearGradient>
                 </TouchableOpacity>
-                
-                {isRecording && (
-                  <Svg style={styles.progressRing} width="88" height="88">
-                    <Circle
-                      cx="44"
-                      cy="44"
-                      r="40"
-                      stroke="#22c55e"
-                      strokeWidth="4"
-                      fill="transparent"
-                      strokeDasharray={`${2 * Math.PI * 40}`}
-                      strokeDashoffset={2 * Math.PI * 40 * (1 - (MAX_RECORDING_TIME - timeLeft) / MAX_RECORDING_TIME)}
-                      transform="rotate(-90 44 44)"
-                    />
-                  </Svg>
-                )}
               </Animated.View>
             )}
             {isRecording && (
@@ -747,15 +737,20 @@ const styles = StyleSheet.create({
   placeholder: {
     width: 40,
   },
-  progressContainer: {
+  recordingProgressContainer: {
     paddingHorizontal: 20,
-    paddingVertical: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    paddingVertical: 4,
   },
-  progressText: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 14,
+  recordingProgressBar: {
+    height: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  recordingProgressFill: {
+    height: '100%',
+    backgroundColor: '#22c55e',
+    borderRadius: 2,
   },
   content: {
     flex: 1,
@@ -1000,11 +995,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  progressRing: {
-    position: 'absolute',
-    top: -4,
-    left: -4,
-  },
+
   recordingTime: {
     color: 'white',
     fontSize: 14,
