@@ -70,6 +70,14 @@ export default function TabLayout() {
           tabBarStyle: { display: 'none' }, // Hide tab bar for this screen
         }}
       />
+      <Tabs.Screen
+        name="sentence-reading"
+        options={{
+          title: 'Sentence Reading',
+          href: null, // Hide from tab bar
+          tabBarStyle: { display: 'none' }, // Hide tab bar for this screen
+        }}
+      />
     </Tabs>
   );
 }

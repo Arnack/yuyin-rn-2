@@ -25,9 +25,11 @@ export default function PracticeScreen() {
               <ThemedText type="subtitle">Speak Tones</ThemedText>
             </TouchableOpacity>
           </Link>
-          <TouchableOpacity style={styles.tile}>
-            <ThemedText type="subtitle">Saved Words</ThemedText>
-          </TouchableOpacity>
+          <Link href="/(tabs)/sentence-reading" asChild>
+            <TouchableOpacity style={styles.tile}>
+              <ThemedText type="subtitle">Sentence Reading</ThemedText>
+            </TouchableOpacity>
+          </Link>
         </View>
       </View>
     </ThemedView>

@@ -61,19 +61,21 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </Link>
 
-          <TouchableOpacity style={styles.activityTile}>
-            <View style={[styles.activityIcon, { backgroundColor: '#45B7D1' }]}>
-              <Text style={styles.iconEmoji}>📖</Text>
-            </View>
-            <View style={styles.activityContent}>
-              <Text style={styles.activityTitle}>朗读句子</Text>
-              <Text style={styles.activitySubtitle}>Sentence Reading</Text>
-            </View>
-            <View style={styles.progressIndicator}>
-              <View style={[styles.progressDot, { backgroundColor: '#45B7D1' }]} />
-            </View>
-            <Text style={styles.arrowIcon}>▶</Text>
-          </TouchableOpacity>
+          <Link href="/(tabs)/sentence-reading" asChild>
+            <TouchableOpacity style={styles.activityTile}>
+              <View style={[styles.activityIcon, { backgroundColor: '#45B7D1' }]}>
+                <Text style={styles.iconEmoji}>📖</Text>
+              </View>
+              <View style={styles.activityContent}>
+                <Text style={styles.activityTitle}>朗读句子</Text>
+                <Text style={styles.activitySubtitle}>Sentence Reading</Text>
+              </View>
+              <View style={styles.progressIndicator}>
+                <View style={[styles.progressDot, { backgroundColor: '#45B7D1' }]} />
+              </View>
+              <Text style={styles.arrowIcon}>▶</Text>
+            </TouchableOpacity>
+          </Link>
         </View>
 
         <LinearGradient
