@@ -1,5 +1,7 @@
 import { useAuth } from '@/contexts/AuthContext'
+import { useSubscription } from '@/contexts/SubscriptionContext'
 import { Ionicons } from '@expo/vector-icons'
+import { router } from 'expo-router'
 import React from 'react'
 import {
     Alert,
@@ -13,6 +15,7 @@ import {
 
 export default function ProfileScreen() {
   const { user, signOut } = useAuth()
+  const { isPremium, userSubscription } = useSubscription()
 
   const handleLogout = () => {
     Alert.alert(
@@ -38,6 +41,10 @@ export default function ProfileScreen() {
     )
   }
 
+  const handleSubscriptionPress = () => {
+    router.navigate('/(tabs)/subscription' as any)
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -47,6 +54,36 @@ export default function ProfileScreen() {
           </View>
           <Text style={styles.name}>Welcome!</Text>
           <Text style={styles.email}>{user?.email}</Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Subscription Status</Text>
+          
+          <TouchableOpacity style={styles.subscriptionCard} onPress={handleSubscriptionPress}>
+            <View style={styles.subscriptionHeader}>
+              <Ionicons 
+                name={isPremium ? "diamond" : "diamond-outline"} 
+                size={24} 
+                color={isPremium ? "#10b981" : "#6b7280"} 
+              />
+              <View style={styles.subscriptionInfo}>
+                <Text style={styles.subscriptionStatus}>
+                  {isPremium ? 'Premium Active' : 'Free Plan'}
+                </Text>
+                {isPremium && userSubscription && (
+                  <Text style={styles.subscriptionDetails}>
+                    Expires: {new Date(userSubscription.endDate).toLocaleDateString()}
+                  </Text>
+                )}
+                {!isPremium && (
+                  <Text style={styles.subscriptionDetails}>
+                    Upgrade to unlock all features
+                  </Text>
+                )}
+              </View>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#6b7280" />
+          </TouchableOpacity>
         </View>
 
         <View style={styles.section}>
@@ -82,32 +119,13 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Learning Progress</Text>
+          <Text style={styles.sectionTitle}>Actions</Text>
           
-          <View style={styles.progressCard}>
-            <Text style={styles.progressTitle}>Your YuYin Journey</Text>
-            <Text style={styles.progressSubtitle}>Start practicing to see your progress!</Text>
-            <View style={styles.statsContainer}>
-              <View style={styles.statItem}>
-                <Text style={styles.statNumber}>0</Text>
-                <Text style={styles.statLabel}>Lessons</Text>
-              </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statNumber}>0</Text>
-                <Text style={styles.statLabel}>Streak</Text>
-              </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statNumber}>0</Text>
-                <Text style={styles.statLabel}>XP</Text>
-              </View>
-            </View>
-          </View>
+          <TouchableOpacity style={styles.actionButton} onPress={handleLogout}>
+            <Ionicons name="log-out-outline" size={20} color="#dc2626" />
+            <Text style={styles.actionButtonText}>Logout</Text>
+          </TouchableOpacity>
         </View>
-
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={20} color="#fff" />
-          <Text style={styles.logoutButtonText}>Logout</Text>
-        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   )
@@ -116,18 +134,19 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f8fafc',
   },
   scrollContainer: {
-    padding: 20,
+    flexGrow: 1,
+    paddingHorizontal: 16,
+    paddingTop: 20,
   },
   header: {
     alignItems: 'center',
-    backgroundColor: '#fff',
+    marginBottom: 32,
+    backgroundColor: '#ffffff',
     borderRadius: 16,
     padding: 24,
-    marginBottom: 20,
-    elevation: 2,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -135,12 +154,13 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
+    elevation: 5,
   },
   avatarContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: '#f0f0f0',
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: '#f3f4f6',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
@@ -148,39 +168,72 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#1f2937',
     marginBottom: 4,
   },
   email: {
     fontSize: 16,
-    color: '#666',
+    color: '#6b7280',
   },
   section: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 20,
-    elevation: 2,
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#1f2937',
+    marginBottom: 12,
+  },
+  subscriptionCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 1,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
+    shadowOpacity: 0.05,
+    shadowRadius: 2.22,
+    elevation: 3,
   },
-  sectionTitle: {
-    fontSize: 18,
+  subscriptionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  subscriptionInfo: {
+    marginLeft: 12,
+    flex: 1,
+  },
+  subscriptionStatus: {
+    fontSize: 16,
     fontWeight: '600',
-    color: '#333',
-    marginBottom: 16,
+    color: '#1f2937',
+  },
+  subscriptionDetails: {
+    fontSize: 14,
+    color: '#6b7280',
+    marginTop: 2,
   },
   infoItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 2.22,
+    elevation: 3,
   },
   infoContent: {
     marginLeft: 12,
@@ -188,13 +241,13 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     fontSize: 14,
-    color: '#666',
+    color: '#6b7280',
     marginBottom: 2,
   },
   infoValue: {
     fontSize: 16,
-    color: '#333',
     fontWeight: '500',
+    color: '#1f2937',
   },
   verified: {
     color: '#10b981',
@@ -202,52 +255,26 @@ const styles = StyleSheet.create({
   unverified: {
     color: '#f59e0b',
   },
-  progressCard: {
-    alignItems: 'center',
-  },
-  progressTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 4,
-  },
-  progressSubtitle: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 20,
-  },
-  statsContainer: {
+  actionButton: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-  },
-  statItem: {
     alignItems: 'center',
-  },
-  statNumber: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#dc2626',
-    marginBottom: 4,
-  },
-  statLabel: {
-    fontSize: 14,
-    color: '#666',
-  },
-  logoutButton: {
-    flexDirection: 'row',
-    backgroundColor: '#dc2626',
+    backgroundColor: '#ffffff',
     borderRadius: 12,
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
+    padding: 16,
+    marginBottom: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 2.22,
+    elevation: 3,
   },
-  logoutButtonText: {
-    color: '#fff',
+  actionButtonText: {
     fontSize: 16,
-    fontWeight: '600',
-    marginLeft: 8,
+    fontWeight: '500',
+    color: '#dc2626',
+    marginLeft: 12,
   },
 }) 
