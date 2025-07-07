@@ -45,6 +45,89 @@ export default function ProfileScreen() {
     router.navigate('/(tabs)/subscription' as any)
   }
 
+  const handleLoginPress = () => {
+    router.navigate('/(auth)/login' as any)
+  }
+
+  const handleSignupPress = () => {
+    router.navigate('/(auth)/register' as any)
+  }
+
+  // Guest user view
+  if (!user) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.header}>
+            <View style={styles.avatarContainer}>
+              <Ionicons name="person-outline" size={60} color="#666" />
+            </View>
+            <Text style={styles.name}>Welcome, Guest!</Text>
+            <Text style={styles.email}>Sign in to access all features</Text>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Join YuYin</Text>
+            <Text style={styles.sectionDescription}>
+              Create an account to save your progress, access premium features, and sync across devices.
+            </Text>
+            
+            <TouchableOpacity style={styles.primaryButton} onPress={handleSignupPress}>
+              <Ionicons name="person-add-outline" size={20} color="#fff" />
+              <Text style={styles.primaryButtonText}>Create Account</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.secondaryButton} onPress={handleLoginPress}>
+              <Ionicons name="log-in-outline" size={20} color="#dc2626" />
+              <Text style={styles.secondaryButtonText}>Sign In</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Free Features</Text>
+            <View style={styles.featureList}>
+              <View style={styles.featureItem}>
+                <Ionicons name="checkmark-circle" size={20} color="#10b981" />
+                <Text style={styles.featureText}>Basic tone practice</Text>
+              </View>
+              <View style={styles.featureItem}>
+                <Ionicons name="checkmark-circle" size={20} color="#10b981" />
+                <Text style={styles.featureText}>Simple pronunciation exercises</Text>
+              </View>
+              <View style={styles.featureItem}>
+                <Ionicons name="checkmark-circle" size={20} color="#10b981" />
+                <Text style={styles.featureText}>Basic lesson content</Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Premium Benefits</Text>
+            <View style={styles.featureList}>
+              <View style={styles.featureItem}>
+                <Ionicons name="diamond" size={20} color="#f59e0b" />
+                <Text style={styles.featureText}>Advanced tone recognition</Text>
+              </View>
+              <View style={styles.featureItem}>
+                <Ionicons name="diamond" size={20} color="#f59e0b" />
+                <Text style={styles.featureText}>Personalized feedback</Text>
+              </View>
+              <View style={styles.featureItem}>
+                <Ionicons name="diamond" size={20} color="#f59e0b" />
+                <Text style={styles.featureText}>Offline mode</Text>
+              </View>
+              <View style={styles.featureItem}>
+                <Ionicons name="diamond" size={20} color="#f59e0b" />
+                <Text style={styles.featureText}>Progress tracking</Text>
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    )
+  }
+
+  // Authenticated user view
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -275,6 +358,57 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     color: '#dc2626',
+    marginLeft: 12,
+  },
+  sectionDescription: {
+    fontSize: 14,
+    color: '#6b7280',
+    marginBottom: 16,
+    lineHeight: 20,
+  },
+  primaryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#dc2626',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+  },
+  primaryButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
+    marginLeft: 8,
+  },
+  secondaryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#dc2626',
+  },
+  secondaryButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#dc2626',
+    marginLeft: 8,
+  },
+  featureList: {
+    marginTop: 8,
+  },
+  featureItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  featureText: {
+    fontSize: 14,
+    color: '#374151',
     marginLeft: 12,
   },
 }) 

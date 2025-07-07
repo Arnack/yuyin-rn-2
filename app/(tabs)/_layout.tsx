@@ -41,6 +41,13 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="character-writing"
+        options={{
+          title: 'Writing',
+          tabBarIcon: ({ color }: { color: string }) => <IconSymbol size={28} name="pencil" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="subscription"
         options={{
           title: 'Premium',

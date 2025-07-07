@@ -203,6 +203,11 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
 
   const purchaseSubscription = useCallback(async (planId: string): Promise<boolean> => {
     try {
+      if (!user) {
+        Alert.alert('Login Required', 'Please log in to purchase a subscription')
+        return false
+      }
+
       setIsLoading(true)
       const plan = availablePlans.find(p => p.id === planId)
       if (!plan) {
@@ -229,10 +234,15 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     } finally {
       setIsLoading(false)
     }
-  }, [availablePlans])
+  }, [user, availablePlans])
 
   const restorePurchases = useCallback(async () => {
     try {
+      if (!user) {
+        Alert.alert('Login Required', 'Please log in to restore purchases')
+        return
+      }
+
       setIsLoading(true)
       const purchases = await getAvailablePurchases()
       
@@ -247,7 +257,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [user])
 
   const cancelSubscription = useCallback(async () => {
     Alert.alert(
@@ -258,7 +268,12 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   }, [])
 
   const checkSubscriptionStatus = useCallback(async () => {
-    if (!user) return
+    if (!user) {
+      // User not authenticated - no premium access
+      setUserSubscription(null)
+      setIsPremium(false)
+      return
+    }
 
     try {
       const { data: subscription, error } = await supabase
@@ -301,9 +316,8 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   }, [user])
 
   useEffect(() => {
-    if (user) {
-      checkSubscriptionStatus()
-    }
+    // Always check subscription status when user changes (including null -> user)
+    checkSubscriptionStatus()
   }, [user, checkSubscriptionStatus])
 
   const value: SubscriptionContextValue = {

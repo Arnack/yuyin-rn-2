@@ -13,10 +13,6 @@ export default function Index() {
     )
   }
 
-  // Redirect to appropriate screen based on authentication status
-  if (user) {
-    return <Redirect href="/(tabs)" />
-  }
-
-  return <Redirect href="/(auth)/login" />
+  // Always redirect to main app - authentication is optional
+  return <Redirect href="/(tabs)" />
 } 
